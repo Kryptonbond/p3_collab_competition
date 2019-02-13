@@ -42,22 +42,15 @@ class Agent():
         self.epsilon = EPSILON
 
         # Actor Network (w/ Target Network)
-
         self.actor_local = Actor(state_size, action_size, random_seed).to(device)
         self.actor_target = Actor(state_size, action_size, random_seed).to(device)
         self.actor_optimizer = optim.Adam(self.actor_local.parameters(), lr=LR_ACTOR)
 
-        #self.actor_local.load_state_dict(torch.load('checkpoint_actorleft.pth'))  ## load Actor
-
-        
         # Critic Network (w/ Target Network)
-        
         self.critic_local = Critic(state_size, action_size, random_seed).to(device)
         self.critic_target = Critic(state_size, action_size, random_seed).to(device)
         self.critic_optimizer = optim.Adam(self.critic_local.parameters(), lr=LR_CRITIC, weight_decay=WEIGHT_DECAY)
 
-        #self.critic_local.load_state_dict(torch.load('checkpoint_criticleft.pth')) ## load Critic
-        
         # Noise process
         self.noise = OUNoise(action_size, random_seed, sigma=0.1) ### Saurabh
         
@@ -95,11 +88,6 @@ class Agent():
             action += self.noise.sample()
         return np.clip(action, -1, 1)
 
-    def start_learn(self):
-        if len(self.memory) > BATCH_SIZE:
-            experiences = self.memory.sample()
-            self.learn(experiences, GAMMA)
-    
     def reset(self):
         self.noise.reset()
 
